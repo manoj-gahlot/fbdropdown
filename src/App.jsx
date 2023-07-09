@@ -9,6 +9,7 @@ import { ReactComponent as ChevronIcon } from './icons/chevron.svg';
 import { ReactComponent as ArrowIcon } from './icons/arrow.svg';
 import { ReactComponent as BoltIcon } from './icons/bolt.svg';
 
+import { CSSTransition } from 'react-transition-group';
 
 function App() {
   return (
@@ -25,8 +26,15 @@ function App() {
   );
 }
 function DropdownMenu() {
+  const [activeMenu, setActiveMenu] = useState("main");
+  const [menuHeight, setMenuHeight] = useState(null);
+
+  function calcHeight(el) {
+    const height = el.offsetHeight;
+    setMenuHeight(height);
+  }
   function DropdownItem(props) {
-    return (<a href='#' className='menu-item'>
+    return (<a href='#' className='menu-item' onClick={() => props.goToMenu && setActiveMenu(props.goToMenu)}>
       <span href="#" className='icon-button'>{props.leftIcon}</span>
       {props.children}
       <span href="#" className='icon-right'>{props.rightIcon}</span>
@@ -35,13 +43,25 @@ function DropdownMenu() {
   }
 
   return (
-    <div className="dropdown">
-      <DropdownItem>MyProfile</DropdownItem>
-      {/* <DropdownItem>MyProfile</DropdownItem>
-      <DropdownItem>MyProfile</DropdownItem> */}
-      <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />}>Setting</DropdownItem>
-      <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />}>Setting</DropdownItem>
-      <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />}>Setting</DropdownItem>
+    <div className="dropdown" style={{ height: menuHeight }}>
+      <CSSTransition in={activeMenu === "main"} unmountOnExit timeout={500} classNames="menu-primary" onEnter={calcHeight}>
+        <div className="menu">
+          <DropdownItem>MyProfile</DropdownItem>
+          <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />} goToMenu="settings">Setting</DropdownItem>
+        </div>
+      </CSSTransition>
+      <CSSTransition in={activeMenu === "settings"} unmountOnExit timeout={500} classNames="menu-secondary" onEnter={calcHeight}>
+        <div className="menu">
+          <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />} goToMenu="main">main</DropdownItem>
+          <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />}>Setting</DropdownItem>
+          <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />}>Setting</DropdownItem>
+          <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />}>Setting</DropdownItem>
+          <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />}>Setting</DropdownItem>
+          <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />}>Setting</DropdownItem>
+          <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />}>Setting</DropdownItem>
+          <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />}>Setting</DropdownItem>
+        </div>
+      </CSSTransition>
     </div>
   )
 }
@@ -64,3 +84,4 @@ function NavItem(props) {
   )
 }
 export default App;
+
